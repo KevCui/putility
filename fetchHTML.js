@@ -13,7 +13,7 @@ if (url === undefined) {
 var page = require('webpage').create();
 var timestamp = Math.floor(Date.now() / 1000);
 page.open(url, function(status) {
-  if(status === "success") {
+  if (status === "success") {
     var p = page.evaluate(function () {
       return document.getElementsByTagName('html')[0].innerHTML;
     });
