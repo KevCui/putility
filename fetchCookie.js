@@ -28,12 +28,15 @@ const wMsec = (program.wait === undefined) ? '' : parseInt(program.wait);
 
   await page.setUserAgent(uAgent);
   await page.goto(_URL, {timeout: 30000, waitUntil: 'domcontentloaded'});
+
   if (wMsec !== '') {
     await page.waitFor(wMsec);
   } else {
     await page.waitForNavigation();
   }
+
   const cookie = await page.cookies();
   console.log(JSON.stringify(cookie));
+
   await browser.close();
 })();
