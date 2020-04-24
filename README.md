@@ -17,18 +17,19 @@ npm i puppeteer-core commander
 ## How to use
 
 ```
-Usage: ./pUtility.js <url> [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]
+Usage: ./pUtility.js <url> [-u <user_agent>] [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]
 
 Options:
-  -w, --wait <millisecond>      optional, waitfor n milliseconds
-  -p, --path <binary_path>      optional, path to chrome/chromium binary
-                                default "/usr/bin/chromium"
-  -c, --command <cmd1,cmd2...>  optional, one or multiple commands:
-                                ["screenshot", "html", "cookie", "header"]
-                                default "screenshot"
-  -s, --show                    optional, show browser
-                                default not show
-  -h, --help                    display help for command
+  -u, --agent <user_agent>  optional, browser user agent
+  -w, --wait <millisecond>  optional, waitfor n milliseconds
+  -p, --path <binary_path>  optional, path to chrome/chromium binary
+                            default "/usr/bin/chromium"
+  -c, --cmd <cmd1,cmd2...>  optional, one or multiple commands:
+                            ["html", "screenshot", "cookie", "header"]
+                            default "html"
+  -s, --show                optional, show browser
+                            default not show
+  -h, --help                display help for command
 ```
 
 ## Function

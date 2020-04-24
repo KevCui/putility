@@ -5,10 +5,11 @@ const puppeteer = require('puppeteer-core');
 
 program
   .name('./pUtility.js')
-  .usage('<url> [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
+  .usage('<url> [-u <user_agent>] [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
+  .option('-u, --agent <user_agent>', 'optional, browser user agent')
   .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
   .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
-  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["screenshot", "html", "cookie", "header"]\ndefault "screenshot"')
+  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["html", "screenshot", "cookie", "header"]\ndefault "html"')
   .option('-s, --show', 'optional, show browser\ndefault not show')
   .arguments('<url>')
   .action(function (url) {
@@ -20,14 +21,14 @@ program.parse(process.argv);
 const cPath = (program.path === undefined) ? '/usr/bin/chromium' : program.path;
 const hMode = (program.show === undefined) ? true : false;
 const wMsec = (program.wait === undefined) ? '' : parseInt(program.wait);
-const cExec = (program.cmd === undefined) ? 'screenshot' : program.cmd;
+const cExec = (program.cmd === undefined) ? 'html' : program.cmd;
+const tStamp = Math.floor(Date.now() / 1000);
 
 (async() => {
   const browser = await puppeteer.launch({executablePath: cPath, headless: hMode});
   const page = await browser.newPage();
-  const dAgent = await browser.userAgent();
-  const uAgent = dAgent.replace('Headless', '');
-  const tStamp = Math.floor(Date.now() / 1000);
+  var uAgent = (program.agent === undefined) ? await browser.userAgent() : program.agent;
+  uAgent = uAgent.replace('Headless', '');
 
   /* fetch response header*/
   if (cExec.indexOf('header') !== -1) {
