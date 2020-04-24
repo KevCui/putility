@@ -8,7 +8,7 @@ program
   .usage('<url> [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
   .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
   .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
-  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["screenshot", "html", "cookie"]\ndefault "screenshot"')
+  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["screenshot", "html", "cookie", "header"]\ndefault "screenshot"')
   .option('-s, --show', 'optional, show browser\ndefault not show')
   .arguments('<url>')
   .action(function (url) {
@@ -28,6 +28,14 @@ const cExec = (program.cmd === undefined) ? 'screenshot' : program.cmd;
   const dAgent = await browser.userAgent();
   const uAgent = dAgent.replace('Headless', '');
   const tStamp = Math.floor(Date.now() / 1000);
+
+  /* fetch response header*/
+  if (cExec.indexOf('header') !== -1) {
+    page.on('response', r => {
+      if (r.url() == _URL)
+        console.log(r.headers())
+    });
+  }
 
   await page.setUserAgent(uAgent);
   await page.goto(_URL, {timeout: 30000, waitUntil: 'domcontentloaded'});

@@ -24,7 +24,7 @@ Options:
   -p, --path <binary_path>      optional, path to chrome/chromium binary
                                 default "/usr/bin/chromium"
   -c, --command <cmd1,cmd2...>  optional, one or multiple commands:
-                                ["screenshot", "html", "cookie"]
+                                ["screenshot", "html", "cookie", "header"]
                                 default "screenshot"
   -s, --show                    optional, show browser
                                 default not show
@@ -38,3 +38,5 @@ Options:
 - Fetch HTML: `-c html`, dump <html> tag as output text
 
 - Fetch cookie: `-c cookie`, dump site cookie as output json
+
+- Fetch response header: `-c header`, dump response header as output json
