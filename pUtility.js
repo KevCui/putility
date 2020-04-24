@@ -4,7 +4,7 @@ const program = require('commander');
 const puppeteer = require('puppeteer-core');
 
 program
-  .name('./puppeteer-utilities.js')
+  .name('./pUtility.js')
   .usage('<url> [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
   .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
   .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
