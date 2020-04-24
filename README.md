@@ -1,7 +1,7 @@
-pUtility
+putility
 =========
 
-pUtility.js is a [puppeteer](https://github.com/puppeteer/puppeteer/) script toolkit. It contains some small and useful functions for daily usage.
+putility.js is a [puppeteer](https://github.com/puppeteer/puppeteer/) script toolkit. It contains some small and useful functions for daily usage.
 
 ## Dependency
 
@@ -17,7 +17,7 @@ npm i puppeteer-core commander
 ## How to use
 
 ```
-Usage: ./pUtility.js <url> [-u <user_agent>] [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]
+Usage: ./putility.js <url> [-u <user_agent>] [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]
 
 Options:
   -u, --agent <user_agent>  optional, browser user agent

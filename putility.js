@@ -4,7 +4,7 @@ const program = require('commander');
 const puppeteer = require('puppeteer-core');
 
 program
-  .name('./pUtility.js')
+  .name('./putility.js')
   .usage('<url> [-u <user_agent>] [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
   .option('-u, --agent <user_agent>', 'optional, browser user agent')
   .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
