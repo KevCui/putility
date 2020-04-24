@@ -8,7 +8,7 @@ program
   .usage('<url> [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
   .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
   .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
-  .option('-c, --command <cmd1,cmd2...>', 'optional, one or multiple commands:\n["screenshot", "html", "cookie"]\ndefault "screenshot"')
+  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["screenshot", "html", "cookie"]\ndefault "screenshot"')
   .option('-s, --show', 'optional, show browser\ndefault not show')
   .arguments('<url>')
   .action(function (url) {
@@ -20,7 +20,7 @@ program.parse(process.argv);
 const cPath = (program.path === undefined) ? '/usr/bin/chromium' : program.path;
 const hMode = (program.show === undefined) ? true : false;
 const wMsec = (program.wait === undefined) ? '' : parseInt(program.wait);
-const cExec = (program.command === undefined) ? '' : program.command;
+const cExec = (program.cmd === undefined) ? 'screenshot' : program.cmd;
 
 (async() => {
   const browser = await puppeteer.launch({executablePath: cPath, headless: hMode});
@@ -39,7 +39,7 @@ const cExec = (program.command === undefined) ? '' : program.command;
   }
 
   /* take screenshot */
-  if (cExec === '' || cExec.indexOf('screenshot') !== -1) {
+  if (cExec.indexOf('screenshot') !== -1) {
     await page.screenshot({path:'./' + tStamp + '.jpg', type: 'jpeg', fullPage: true});
   }
 
