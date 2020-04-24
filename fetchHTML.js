@@ -1,23 +1,44 @@
-// Usage:
-//   phantomjs webScreenshot <url>
+#!/usr/bin/env node
 
-var system = require('system');
-var args = system.args;
-var url = args[1];
+const program = require('commander');
+const puppeteer = require('puppeteer-core');
 
-if (url === undefined) {
-  console.log("[ERROR] Missing input <url>");
-  phantom.exit();
-}
+program
+  .name('./fetchCookie.js')
+  .usage('<url> [-w <seconds>] [-p <path>] [-s]')
+  .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
+  .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
+  .option('-s, --show', 'optional, show browser\ndefault not show')
+  .arguments('<url>')
+  .action(function (url) {
+    _URL = url;
+  });
 
-var page = require('webpage').create();
-var timestamp = Math.floor(Date.now() / 1000);
-page.open(url, function(status) {
-  if (status === "success") {
-    var p = page.evaluate(function () {
-      return document.getElementsByTagName('html')[0].innerHTML;
-    });
-    console.log(p);
+program.parse(process.argv);
+
+const cPath = (program.path === undefined) ? '/usr/bin/chromium' : program.path;
+const hMode = (program.show === undefined) ? true : false;
+const wMsec = (program.wait === undefined) ? '' : parseInt(program.wait);
+
+(async() => {
+  const browser = await puppeteer.launch({executablePath: cPath, headless: hMode});
+  const page = await browser.newPage();
+  const dAgent = await browser.userAgent();
+  const uAgent = dAgent.replace('Headless', '');
+
+  await page.setUserAgent(uAgent);
+  await page.goto(_URL, {timeout: 30000, waitUntil: 'domcontentloaded'});
+
+  if (wMsec !== '') {
+    await page.waitFor(wMsec);
+  } else {
+    await page.waitForNavigation();
   }
-  phantom.exit();
-});
+
+  const p = await page.evaluate(function () {
+    return document.getElementsByTagName('html')[0].innerHTML;
+  });
+  console.log(p);
+
+  await browser.close();
+})();
