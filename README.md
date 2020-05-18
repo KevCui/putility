@@ -17,7 +17,7 @@ npm i puppeteer-core commander
 ## How to use
 
 ```
-Usage: ./putility.js <url> [-u <user_agent>] [-w <seconds>] [-p <path>] [-c <cmd1,cmd2...>] [-s]
+Usage: ./putility.js <url> [-u <user_agent>] [-w <millisecond>] [-p <path>] [-c <cmd1,cmd2...>] [-s]
 
 Options:
   -u, --agent <user_agent>  optional, browser user agent
