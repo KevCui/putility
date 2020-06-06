@@ -9,7 +9,8 @@ program
   .option('-u, --agent <user_agent>', 'optional, browser user agent')
   .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
   .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
-  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["html", "screenshot", "cookie", "header"]\ndefault "html"')
+  .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["html", "screenshot", "cookie", "header", "matchrequest"]\ndefault "html"')
+  .option('-m, --match <pattern>', 'optional, define pattern used with "matchrequest" command')
   .option('-s, --show', 'optional, show browser\ndefault not show')
   .arguments('<url>')
   .action(function (url) {
@@ -22,6 +23,7 @@ const cPath = (program.path === undefined) ? '/usr/bin/chromium' : program.path;
 const hMode = (program.show === undefined) ? true : false;
 const wMsec = (program.wait === undefined) ? '' : parseInt(program.wait);
 const cExec = (program.cmd === undefined) ? 'html' : program.cmd;
+const mPatt = (program.match === undefined) ? '' : program.match;
 const tStamp = Math.floor(Date.now() / 1000);
 
 (async() => {
@@ -29,6 +31,20 @@ const tStamp = Math.floor(Date.now() / 1000);
   const page = await browser.newPage();
   var uAgent = (program.agent === undefined) ? await browser.userAgent() : program.agent;
   uAgent = uAgent.replace('Headless', '');
+
+  /* fetch URL and headers of matched request URL */
+  if (cExec.indexOf('matchrequest') !== -1) {
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+    if (request.url().indexOf(mPatt) > -1) {
+      var jsonObj = request.headers();
+      jsonObj['requestURL'] = request.url();
+      console.log(JSON.stringify(jsonObj));
+      return;
+    } else {
+      request.continue();
+    }});
+  }
 
   /* fetch response header*/
   if (cExec.indexOf('header') !== -1) {
