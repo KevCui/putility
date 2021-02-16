@@ -7,7 +7,7 @@ program
   .name('./putility.js')
   .usage('<url> [-u <user_agent>] [-w <millisecond>] [-p <path>] [-c <cmd1,cmd2...>] [-s]')
   .option('-u, --agent <user_agent>', 'optional, browser user agent')
-  .option('-w, --wait <millisecond>', 'optional, waitfor n milliseconds')
+  .option('-w, --wait <millisecond>', 'optional, wait for n milliseconds')
   .option('-p, --path <binary_path>', 'optional, path to chrome/chromium binary\ndefault "/usr/bin/chromium"')
   .option('-c, --cmd <cmd1,cmd2...>', 'optional, one or multiple commands:\n["html", "screenshot", "cookie", "header", "matchrequest"]\ndefault "html"')
   .option('-m, --match <pattern>', 'optional, define pattern used with "matchrequest" command')
@@ -18,39 +18,40 @@ program
   });
 
 program.parse(process.argv);
+const options = program.opts();
 
-const cPath = (program.path === undefined) ? '/usr/bin/chromium' : program.path;
-const hMode = (program.show === undefined) ? true : false;
-const wMsec = (program.wait === undefined) ? '' : parseInt(program.wait);
-const cExec = (program.cmd === undefined) ? 'html' : program.cmd;
-const mPatt = (program.match === undefined) ? '' : program.match;
+const cPath = (options.path === undefined) ? '/usr/bin/chromium' : options.path;
+const hMode = (options.show === undefined) ? true : false;
+const wMsec = (options.wait === undefined) ? '' : parseInt(options.wait);
+const cExec = (options.cmd === undefined) ? 'html' : options.cmd;
+const mPatt = (options.match === undefined) ? '' : options.match;
 const tStamp = Math.floor(Date.now() / 1000);
 
 (async() => {
   const browser = await puppeteer.launch({executablePath: cPath, headless: hMode});
   const page = await browser.newPage();
-  var uAgent = (program.agent === undefined) ? await browser.userAgent() : program.agent;
+  var uAgent = (options.agent === undefined) ? await browser.userAgent() : options.agent;
   uAgent = uAgent.replace('Headless', '');
 
   /* fetch URL and headers of matched request URL */
   if (cExec.indexOf('matchrequest') !== -1) {
     await page.setRequestInterception(true);
     page.on('request', request => {
-    if (request.url().indexOf(mPatt) > -1) {
-      var jsonObj = request.headers();
-      jsonObj['requestURL'] = request.url();
-      console.log(JSON.stringify(jsonObj));
-      return;
-    } else {
-      request.continue();
-    }});
+      if (request.url().indexOf(mPatt) > -1) {
+        var jsonObj = request.headers();
+        jsonObj['requestURL'] = request.url();
+        console.log(JSON.stringify(jsonObj));
+        return;
+      } else {
+        request.continue();
+      }});
   }
 
   /* fetch response header*/
   if (cExec.indexOf('header') !== -1) {
     page.on('response', r => {
       if (r.url() == _URL)
-        console.log(r.headers())
+        console.log(r.headers());
     });
   }
 
@@ -58,7 +59,7 @@ const tStamp = Math.floor(Date.now() / 1000);
   await page.goto(_URL, {timeout: 30000, waitUntil: 'domcontentloaded'});
 
   if (wMsec !== '') {
-    await page.waitFor(wMsec);
+    await page.waitForTimeout(wMsec);
   } else {
     await page.waitForNavigation();
   }

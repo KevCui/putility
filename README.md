@@ -21,7 +21,7 @@ Usage: ./putility.js <url> [-u <user_agent>] [-w <millisecond>] [-p <path>] [-c 
 
 Options:
   -u, --agent <user_agent>  optional, browser user agent
-  -w, --wait <millisecond>  optional, waitfor n milliseconds
+  -w, --wait <millisecond>  optional, wait for n milliseconds
   -p, --path <binary_path>  optional, path to chrome/chromium binary
                             default "/usr/bin/chromium"
   -c, --cmd <cmd1,cmd2...>  optional, one or multiple commands:
